@@ -1,0 +1,60 @@
+import requests
+from bs4 import BeautifulSoup
+
+file = open('source.txt','r', encoding="utf-8")
+
+max = 15
+file_list = file.readlines()
+
+file.close()
+
+fileUrl = []
+
+file = open('source.txt','a')
+
+i = 0
+numOfEl = len(file_list)
+while i < numOfEl:
+    page = requests.get(file_list[i])
+    soup = BeautifulSoup(page.content, 'html.parser')
+    results = soup.find('span', class_='price')
+    name = soup.find('h1')
+    x = results
+    name = str(name)
+    name = name.split("<")
+    name = name[1]
+    name = str(name)
+
+    lenght = len(name)
+
+    x = str(x)
+    cena = x[20:25]
+    cena = str(cena)
+    lenght_cena = len(cena)
+    if cena[lenght_cena - 1] != "<":
+        cena = float(cena)
+    else:
+        cena = x[20:24]
+        cena =float(cena)
+    print(" %s" % name[3:lenght])
+    if max > cena:
+        print(" Dobra cena")
+    else:
+        print(" Słaba cena")
+
+    print(" %s" % cena)
+    i+=1
+
+key = 'https://upolujebooka.pl/oferta,'
+
+print("\nCzy chesz dodać jakiś link? (t/n)")
+odp = input()
+if odp == "t":
+    print("\nWklej--->")
+    addURL = input()
+    file = open('source.txt','a', encoding="utf-8")
+    if addURL[0:len(key)] == key:
+        file.write("\n" + addURL)
+    file.close()
+
+
